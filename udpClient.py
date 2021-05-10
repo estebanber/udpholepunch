@@ -61,8 +61,8 @@ def mainSender(host='127.0.0.1', port=9999):
             count=0;
             while True:
                 sleep(1)
-                print(f'Sending to {addr}: Dato {count}')
-                sock.sendto(bytes(f'Dato {count}\n','utf-8'), addr)
+                print('Sending to {addr}: Dato {count}')
+                sock.sendto(bytes('Dato {count}\n','utf-8'), addr)
                 count=count +1
 
 
