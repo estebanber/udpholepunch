@@ -14,6 +14,7 @@ def main(host='0.0.0.0', port=9999):
     logger.info("server - waiting connections in: %s:%s", host,port)
     while True:
         data, addr = sock.recvfrom(1024) # buffer size is 1024 bytes
+        sock.sendto(b'OKOK', addr)
         logger.info("connection from: %s - %s", addr, data)
         addresses.append(addr)
         for a in addresses:
