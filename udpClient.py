@@ -54,6 +54,7 @@ def mainSender(host='127.0.0.1', port=9999):
     while True:
         data, addr = sock.recvfrom(1024)
         pck = data[0:4].decode('utf-8')
+        print(data)
         if pck == 'NEWC':
             addr = msg_to_addr(data)
             sock.sendto(b'0', addr)
