@@ -71,9 +71,9 @@ if __name__ == '__main__':
     if sys.argv[1] == 'R':
         hilo = threading.Thread(target=getCommand)
         hilo.start()
-        argumentos= sys.argv[1:3]
+        argumentos= sys.argv[1:4]
         mainReciever(*addr_from_args(argumentos))
     elif sys.argv[1] == 'S':
-        argumentos= sys.argv[1:3]
+        argumentos= sys.argv[1:4]
         mainSender(*addr_from_args(argumentos))
 
