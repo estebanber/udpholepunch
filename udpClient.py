@@ -6,6 +6,7 @@ from utils import *
 from time import sleep
 
 logger = logging.getLogger()
+myip=[]
 addresses = {}
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
 
@@ -21,6 +22,8 @@ def mainReciever(host='127.0.0.1', port=9999):
                 actualizarLista(addresses,data)
         elif comm[0:4] == 'CONN':
             sock.sendto(comm.encode('utf-8'), (host,port))
+            lanPort = sock.getsockname()[1]
+            sock.sendto(addr_to_msg((myip[0],lanPort)), (host, port))
             data, addr = sock.recvfrom(1024)
             print(data)
             addr = msg_to_addr(data)
@@ -60,6 +63,8 @@ def actualizarLista(lista,data):
 
 def mainSender(host='127.0.0.1', port=9999):
     sock.sendto(b'0', (host, port))
+    lanPort = sock.getsockname()[1]
+    sock.sendto(addr_to_msg((myip[0],lanPort)), (host, port))
     while True:
         data, addr = sock.recvfrom(1024)
         com = data[0:4].decode('utf-8')
@@ -103,6 +108,12 @@ def mainSender(host='127.0.0.1', port=9999):
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(message)s')
+    myip = [ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith('127.')][:1]
+    if not myip:
+        print("Check your connection")
+        exit()
+
+    
     if sys.argv[1] == 'R':
         argumentos= sys.argv[1:4]
         mainReciever(*addr_from_args(argumentos))
