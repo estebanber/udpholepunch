@@ -26,13 +26,16 @@ def mainReciever(host='127.0.0.1', port=9999):
             sock.sendto(addr_to_msg((myip[0],lanPort)), (host, port))
             data, addr = sock.recvfrom(1024)
             print(data)
-            addr = msg_to_addr(data)
-            print(addr)
+            loc_rem=data.decode('utf-8').split('|')
+            addr1 = msg_to_addr(loc_rem[0].encode('utf-8'))
+            addr2 = msg_to_addr(loc_rem[1].encode('utf-8'))
+            print(addr1,addr2)
             hsok=False
             hnsk=False
             connReady=False
             while not connReady:
-                sock.sendto(b'HNSK', addr)
+                sock.sendto(b'HNSK', addr1)
+                sock.sendto(b'HNSK', addr2)
                 data, addr = sock.recvfrom(1024)
                 print(data)
                 if data==b'HNSK':
@@ -76,13 +79,16 @@ def mainSender(host='127.0.0.1', port=9999):
         if com == 'NEWC':
             data, addr = sock.recvfrom(1024)
             print(data)
-            addr = msg_to_addr(data)
-            print(addr)
+            loc_rem=data.decode('utf-8').split('|')
+            addr1 = msg_to_addr(loc_rem[0].encode('utf-8'))
+            addr2 = msg_to_addr(loc_rem[1].encode('utf-8'))
+            print(addr1,addr2)
             hsok=False
             hnsk=False
             connReady=False
             while not connReady:
-                sock.sendto(b'HNSK', addr)
+                sock.sendto(b'HNSK', addr1)
+                sock.sendto(b'HNSK', addr2)
                 data, addr = sock.recvfrom(1024)
                 print(data)
                 if data==b'HNSK':
