@@ -19,7 +19,8 @@ class PeerRecords():
     def addInfo(self,rec):
         pass
     def getAddr(self,idn):
-        pass
+        d=self.data[idn]
+        return d["private_ip"],d["private_port"],d["public_ip"],d["public_port"]
     def print(self):
         print('========================================================')
         for i,d in enumerate(self.data):
@@ -35,9 +36,7 @@ def main(host='0.0.0.0', port=9999):
     while True:
         data, addr = sock.recvfrom(1024) # buffer size is 1024 bytes
         if data == b'0': continue
-        print(data,addr)
         processedData = hp.processRlhpPacket(data)
-        print(processedData)        
         if processedData['command'] == hp.Command.REGISTRAR:
             newPeer = {
                 'type':processedData['type'],
@@ -49,20 +48,36 @@ def main(host='0.0.0.0', port=9999):
             ident = peers.addRecord(newPeer)
             peers.print()
             sock.sendto(hp.createRlhpPacket(0,666,{'command':hp.Command.OK,'identifier':ident}), addr)
-            logger.info("connection from: %s - %s", addr, data)
-        elif processedData.command == Command.INFO:
-            peers.addInfo(processedData)
-        elif processedData.command == Command.CONECTAR:
-            oid=processedData.identifier
-            pid=processedData.peerIdentifier
-            sock.sendto(createRlhpPacket(0,666,{}), peers.getAddr(oid))
-            sock.sendto(createRlhpPacket(0,666,{}), peers.getAddr(pid))
-        elif processedData.command == Command.LISTAR:
-            sock.sendto(createRlhpPacket(0,666,{}), addr)
+            logger.info("connection from: %s - %s", addr, 'NUEVO PEER')
+        elif processedData['command'] == hp.Command.CONECTAR:
+            receiver_id=processedData['myid']
+            sender_id=processedData['remotePeer']
+            rpip, rpp, rPip, rPp = peers.getAddr(receiver_id)
+            spip, spp, sPip, sPp = peers.getAddr(sender_id)
+
+            packet={
+                'command':hp.Command.INTERCAMBIAR,
+                'remotePeer': receiver_id,
+                'private_ip':rpip,
+                'private_port':rpp,
+                'public_ip':rPip,
+                'public_port':rPp
+            }
+            sock.sendto(hp.createRlhpPacket(0,666,packet), (sPip,sPp))
+            packet={
+                'command':hp.Command.INTERCAMBIAR,
+                'remotePeer': sender_id,
+                'private_ip':spip,
+                'private_port':spp,
+                'public_ip':sPip,
+                'public_port':sPp
+            }
+            sock.sendto(hp.createRlhpPacket(0,666,packet), (rPip,rPp))
+        elif processedData['command'] == hp.Command.LIST:
+            sock.sendto(hp.createRlhpPacket(0,666,{}), addr)
         else:
             print(data)
-            
-        
+
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(message)s')
     main(*addr_from_args(sys.argv))

@@ -17,7 +17,7 @@ Datos: binarios
     * conectar,identificador,indentificador,numero de conexiones,protocolo
 *  Intercambiar:
     * inicia: servidor
-    * interconectar, identificadorPeer, ipl:puertol,ipl:puertol (a ambos peers)
+    * interconectar, identificadorPeer, ipl:puertol,ip:puerto (a ambos peers)
 * Handshake:
     * inicia: peer
     * handshake,indentificador,l (ip local)
