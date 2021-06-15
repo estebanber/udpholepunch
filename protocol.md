@@ -15,7 +15,12 @@ Datos: binarios
 * Conectar
     * Solicitar interconeccion con peer
     * conectar,identificador,indentificador,numero de conexiones,protocolo
-*  Intercambiar:
+* Configuración
+    * Inicia: servidor
+    * Pide una determinada cantidad de conexiones de un protocolo
+    * Conf, conexiones puerto, modo
+    * Conf ok, modo, [pares de conexión]
+* Intercambiar:
     * inicia: servidor
     * interconectar, identificadorPeer, ipl:puertol,ip:puerto (a ambos peers)
 * Handshake:

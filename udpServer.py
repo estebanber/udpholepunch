@@ -33,8 +33,6 @@ def main(host='0.0.0.0', port=9999):
             sock.sendto(b'LIST\n'+list_of_addresses(addresses), addr)
         else:
             print(data)
-            
-        
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(message)s')
     main(*addr_from_args(sys.argv))
